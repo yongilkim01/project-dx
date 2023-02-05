@@ -1,9 +1,24 @@
 #pragma once
-#include "WinHeader.h"
-
+#include "DxWin.h"
+#include "DxException.h"
 
 // 윈도우 창을 나타내는 클래스
-class Window {
+class Window 
+{
+public:
+	class Exception : public DxException
+	{
+	public:
+		Exception(int, const char*, HRESULT) noexcept;
+		const char* what() const noexcept override;
+		virtual const char* GetType() const noexcept;
+		static std::string TranslateErrorCode(HRESULT);
+		HRESULT GetErrorCode() const noexcept;
+		std::string GetErrorString() const noexcept;
+
+	private:
+		HRESULT hr;
+	};
 private:
 	class WindowClass {
 	public: 
@@ -21,19 +36,21 @@ private:
 	};
 
 public:
-	Window(int width, int height, const char* name) noexcept;
+	Window(int, int, const char*) noexcept;
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 
 private:
-	static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
-	static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
-	LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+	static LRESULT CALLBACK HandleMsgSetup(HWND, UINT, WPARAM, LPARAM) noexcept;
+	static LRESULT CALLBACK HandleMsgThunk(HWND, UINT, WPARAM, LPARAM) noexcept;
+	LRESULT HandleMsg(HWND, UINT, WPARAM, LPARAM) noexcept;
 
 private:
 	int width;
 	int height;
 	HWND hWnd;
-
 };
+
+// error exception helper macro
+#define DXWND_EXCEPT(hr) Window::Exception(__LINE__,__FILE__,hr)
