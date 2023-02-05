@@ -19,7 +19,7 @@ const char* DxException::what() const noexcept
 
 const char* DxException::GetType() const noexcept
 {
-	return "Chili Exception";
+	return "Direct3D Exception";
 }
 
 int DxException::GetLine() const noexcept

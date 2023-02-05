@@ -1,3 +1,4 @@
+#include "resource.h"
 #include "Window.h"
 #include <sstream>
 
@@ -14,12 +15,12 @@ Window::WindowClass::WindowClass() noexcept
 	_wc.cbClsExtra = 0;
 	_wc.cbWndExtra = 0;
 	_wc.hInstance = GetInstance();
-	_wc.hIcon = nullptr;
+	_wc.hIcon = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));
 	_wc.hCursor = nullptr;
 	_wc.hbrBackground = nullptr;
 	_wc.lpszMenuName = nullptr;
 	_wc.lpszClassName = GetName();
-	_wc.hIconSm = nullptr;
+	_wc.hIconSm = static_cast<HICON>(LoadImage(hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0));
 	RegisterClassEx(&_wc);
 }
 
@@ -38,15 +39,24 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 	return wndClass.hInst;
 }
 
-Window::Window(int _width = 0, int _height = 0, const char* _name = "") noexcept
+Window::Window(int _width, int _height, const char* _name)
 {
+	// 초기화
+	width = 0;
+	height = 0;
+
 	// 윈도우 창 크기 설정
 	RECT _wndRect;
 	_wndRect.left = 100;
 	_wndRect.right = _width + _wndRect.left;
 	_wndRect.top = 100;
 	_wndRect.bottom = _height + _wndRect.top;
-	AdjustWindowRect(&_wndRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+	//AdjustWindowRect(&_wndRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
+	if (FAILED(AdjustWindowRect(&_wndRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+	{
+		throw DXWND_LAST_EXCEPT();
+	}
 
 	// 윈도우 생성
 	hWnd = CreateWindow(
@@ -55,6 +65,11 @@ Window::Window(int _width = 0, int _height = 0, const char* _name = "") noexcept
 		CW_USEDEFAULT, CW_USEDEFAULT, _wndRect.right - _wndRect.left, _wndRect.bottom - _wndRect.top,
 		nullptr, nullptr, WindowClass::GetInstance(), this
 	);
+
+	if (hWnd == nullptr)
+	{
+		throw DXWND_LAST_EXCEPT();
+	}
 
 	// 윈도우 띄우기
 	ShowWindow(hWnd, SW_SHOWDEFAULT);

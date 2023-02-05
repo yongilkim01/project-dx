@@ -36,7 +36,7 @@ private:
 	};
 
 public:
-	Window(int, int, const char*) noexcept;
+	Window(int, int, const char*);
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
@@ -54,3 +54,4 @@ private:
 
 // error exception helper macro
 #define DXWND_EXCEPT(hr) Window::Exception(__LINE__,__FILE__,hr)
+#define DXWND_LAST_EXCEPT() Window::Exception(__LINE__,__FILE__,GetLastError())
