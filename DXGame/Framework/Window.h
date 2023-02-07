@@ -1,6 +1,7 @@
 #pragma once
 #include "DxWin.h"
 #include "DxException.h"
+#include "Keyboard.h"
 
 // 윈도우 창을 나타내는 클래스
 class Window 
@@ -45,6 +46,9 @@ private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND, UINT, WPARAM, LPARAM) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND, UINT, WPARAM, LPARAM) noexcept;
 	LRESULT HandleMsg(HWND, UINT, WPARAM, LPARAM) noexcept;
+
+public:
+	Keyboard keybd;
 
 private:
 	int width;
