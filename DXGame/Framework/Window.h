@@ -2,6 +2,7 @@
 #include "DxWin.h"
 #include "DxException.h"
 #include "Keyboard.h"
+#include "Mouse.h"
 
 // 윈도우 창을 나타내는 클래스
 class Window 
@@ -16,7 +17,6 @@ public:
 		static std::string TranslateErrorCode(HRESULT);
 		HRESULT GetErrorCode() const noexcept;
 		std::string GetErrorString() const noexcept;
-
 	private:
 		HRESULT hr;
 	};
@@ -25,7 +25,6 @@ private:
 	public: 
 		static const char* GetName() noexcept;
 		static HINSTANCE GetInstance() noexcept;
-
 	private:
 		WindowClass() noexcept;
 		~WindowClass();
@@ -35,21 +34,19 @@ private:
 		static WindowClass wndClass;
 		HINSTANCE hInst;
 	};
-
 public:
 	Window(int, int, const char*);
 	~Window();
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
-
+	void SetTitle(const std::string& _title);
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND, UINT, WPARAM, LPARAM) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND, UINT, WPARAM, LPARAM) noexcept;
 	LRESULT HandleMsg(HWND, UINT, WPARAM, LPARAM) noexcept;
-
 public:
 	Keyboard keybd;
-
+	Mouse mouse;
 private:
 	int width;
 	int height;

@@ -40,11 +40,10 @@ HINSTANCE Window::WindowClass::GetInstance() noexcept
 }
 
 Window::Window(int _width, int _height, const char* _name)
+	:
+	width(_width),
+	height(_height)
 {
-	// 초기화
-	width = 0;
-	height = 0;
-
 	// 윈도우 창 크기 설정
 	RECT _wndRect;
 	_wndRect.left = 100;
@@ -53,7 +52,7 @@ Window::Window(int _width, int _height, const char* _name)
 	_wndRect.bottom = _height + _wndRect.top;
 	//AdjustWindowRect(&_wndRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
-	if (FAILED(AdjustWindowRect(&_wndRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+	if (AdjustWindowRect(&_wndRect, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 	{
 		throw DXWND_LAST_EXCEPT();
 	}
@@ -78,6 +77,14 @@ Window::Window(int _width, int _height, const char* _name)
 Window::~Window()
 {
 	DestroyWindow(hWnd);
+}
+
+void Window::SetTitle(const std::string& _title)
+{
+	if (SetWindowText(hWnd, _title.c_str()) == 0)
+	{
+		throw DXWND_LAST_EXCEPT();
+	}
 }
 
 LRESULT WINAPI Window::HandleMsgSetup(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam) noexcept
@@ -133,6 +140,64 @@ LRESULT Window::HandleMsg(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 		keybd.OnChar(static_cast<unsigned char>(_wParam));
 		break;
 	/********** END KEYBOARD MESSAGES **********/
+	/************* Mouse MESSAGES **************/
+	case WM_MOUSEMOVE:
+	{
+		const POINTS _point = MAKEPOINTS(_lParam);
+		if (_point.x >= 0 && _point.x < width &&
+			_point.y >= 0 && _point.y < height)
+		{
+			mouse.OnMouseMove(_point.x, _point.y);
+			if (!mouse.IsInWindow()) {
+				SetCapture(hWnd);
+				mouse.OnMouseEnter();
+			}
+		}
+		else
+		{
+			if (_wParam & (MK_LBUTTON | MK_RBUTTON))
+			{
+				mouse.OnMouseMove(_point.x, _point.y);
+			}
+			else
+			{
+				ReleaseCapture();
+				mouse.OnMouseLeave();
+			}
+		}
+	}
+	case WM_LBUTTONDOWN:
+	{
+		const POINTS _point = MAKEPOINTS(_lParam);
+		mouse.OnLeftPressed(_point.x, _point.y);
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		const POINTS _point = MAKEPOINTS(_lParam);
+		mouse.OnRightPressed(_point.x, _point.y);
+		break;
+	}
+	case WM_LBUTTONUP:
+	{
+		const POINTS _point = MAKEPOINTS(_lParam);
+		mouse.OnLeftReleased(_point.x, _point.y);
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		const POINTS _point = MAKEPOINTS(_lParam);
+		mouse.OnRightReleased(_point.x, _point.y);
+		break;
+	}
+	case WM_MOUSEWHEEL:
+	{
+		const POINTS _point = MAKEPOINTS(_lParam);
+		const int delta = GET_WHEEL_DELTA_WPARAM(_wParam);
+		mouse.OnWheelDelta(_point.x, _point.y, delta);
+		break;
+	}
+	/*********** END MOUSE MESSAGES ***********/
 	}
 	return DefWindowProc(_hWnd, _msg, _wParam, _lParam);
 }

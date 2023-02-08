@@ -1,4 +1,5 @@
 #include "Window.h"
+#include <sstream>
 
 int CALLBACK WinMain(
 	HINSTANCE hInstance,
@@ -17,10 +18,25 @@ int CALLBACK WinMain(
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-			if (wnd.keybd.KeyIsPressed(VK_MENU))
+			
+			// do app logic (test)
+			std::ostringstream _oss;
+			while (!wnd.mouse.IsEmpty())
 			{
-				MessageBox(nullptr, "SomeThing Happon!", "Space key was Pressed", MB_OK | MB_ICONEXCLAMATION);
+				const auto _e = wnd.mouse.Read();
+				switch (_e.GetType())
+				{
+				case Mouse::Event::Type::WheelUp:
+					_oss << "Up : ";
+					wnd.SetTitle("Gone!");
+					break;
+				case Mouse::Event::Type::Move:
+					_oss << "Mouse Position : (" << _e.GetPosX() << ", " << _e.GetPosY() << ")";
+					wnd.SetTitle(_oss.str());
+					break;
+				}
 			}
+
 		}
 
 		if (gResult == -1)
