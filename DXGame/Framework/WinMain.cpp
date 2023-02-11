@@ -1,5 +1,4 @@
-#include "Window.h"
-#include <sstream>
+#include "App.h"
 
 int CALLBACK WinMain(
 	HINSTANCE hInstance,
@@ -9,42 +8,7 @@ int CALLBACK WinMain(
 {
 	try
 	{
-		Window wnd(800, 300, "My Direct3D");
-
-		MSG msg;
-		BOOL gResult;
-
-		while ((gResult = GetMessage(&msg, nullptr, 0, 0)) > 0)
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-			
-			// do app logic (test)
-			std::ostringstream _oss;
-			while (!wnd.mouse.IsEmpty())
-			{
-				const auto _e = wnd.mouse.Read();
-				switch (_e.GetType())
-				{
-				case Mouse::Event::Type::WheelUp:
-					_oss << "Up : ";
-					wnd.SetTitle("Gone!");
-					break;
-				case Mouse::Event::Type::Move:
-					_oss << "Mouse Position : (" << _e.GetPosX() << ", " << _e.GetPosY() << ")";
-					wnd.SetTitle(_oss.str());
-					break;
-				}
-			}
-
-		}
-
-		if (gResult == -1)
-		{
-			return -1;
-		}
-
-		return msg.wParam;
+		return App{}.Go();
 	}
 	catch (const DxException& _e)
 	{

@@ -71,9 +71,11 @@ private:
 	static constexpr unsigned int bufferSize = 16u;
 	int x = 0;
 	int y = 0;
+	int wheelDeltaCarry = 0;
+
 	bool leftIsPressed = false;
 	bool rightIsPressed = false;
 	bool isInWindow = false;
-	int wheelDeltaCarry = 0;
+
 	std::queue<Event> buffer;
 };

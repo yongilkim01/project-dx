@@ -4,6 +4,9 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 
+#include <optional>
+
+
 // 윈도우 창을 나타내는 클래스
 class Window 
 {
@@ -40,6 +43,7 @@ public:
 	Window(const Window&) = delete;
 	Window& operator=(const Window&) = delete;
 	void SetTitle(const std::string& _title);
+	static std::optional<int> ProcessMessages();
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND, UINT, WPARAM, LPARAM) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND, UINT, WPARAM, LPARAM) noexcept;
