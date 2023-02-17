@@ -3,9 +3,10 @@
 #include "DxException.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "Graphics.h"
 
 #include <optional>
-
+#include <memory>
 
 // 윈도우 창을 나타내는 클래스
 class Window 
@@ -44,6 +45,7 @@ public:
 	Window& operator=(const Window&) = delete;
 	void SetTitle(const std::string& _title);
 	static std::optional<int> ProcessMessages();
+	Graphics& Graphic();
 private:
 	static LRESULT CALLBACK HandleMsgSetup(HWND, UINT, WPARAM, LPARAM) noexcept;
 	static LRESULT CALLBACK HandleMsgThunk(HWND, UINT, WPARAM, LPARAM) noexcept;
@@ -55,6 +57,7 @@ private:
 	int width;
 	int height;
 	HWND hWnd;
+	std::unique_ptr<Graphics> pGraphic;
 };
 
 // error exception helper macro

@@ -72,6 +72,9 @@ Window::Window(int _width, int _height, const char* _name)
 
 	// 윈도우 띄우기
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
+
+	// 그래픽 오브젝트 만들기
+	pGraphic = std::make_unique<Graphics>(hWnd);
 }
 
 Window::~Window()
@@ -102,6 +105,11 @@ std::optional<int> Window::ProcessMessages()
 	}
 
 	return {};
+}
+
+Graphics& Window::Graphic()
+{
+	return *pGraphic;
 }
 
 LRESULT WINAPI Window::HandleMsgSetup(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam) noexcept
