@@ -113,6 +113,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,8 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DxException.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="InfoManager.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -149,9 +153,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="dxerr.h" />
     <ClInclude Include="DxException.h" />
     <ClInclude Include="DxWin.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="InfoManager.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="resource.h" />
@@ -164,6 +170,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\_Sprites\_Icon\dx.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DXGetErrorDescription.inl" />
+    <None Include="DXGetErrorString.inl" />
+    <None Include="DXTrace.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
